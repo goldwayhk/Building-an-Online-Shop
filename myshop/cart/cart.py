@@ -55,11 +55,15 @@ class Cart(object):
         # get the product objects and add them to the cart
         products = Product.objects.filter(id__in=product_ids)
         for product in products:
+            print("+++++++++++++++")
             self.cart[str(product.id)]['product'] = product
         for item in self.cart.values():
+            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']
+            print(item)
             yield item
+
 
     def __len__(self):
         """
