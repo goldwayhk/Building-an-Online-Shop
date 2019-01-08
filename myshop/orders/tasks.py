@@ -1,0 +1,31 @@
+from celery import task
+from django.core.mail import send_mail
+from .models import Order
+from celery import Celery
+
+from celery import Celery
+from django.conf import settings
+
+app = Celery('myshop', backend='amqp', broker='amqp://')
+app.config_from_object('django.conf:settings')
+@app.task
+
+def order_created(order_id):
+    """
+    Task to send an e-mail notification when an order is
+    successfully created.
+    """
+    order = Order.objects.get(id=order_id)
+    subject = 'Order nr. {}'.format(order.id)
+    message = 'Dear {},\n\nYou have successfully placed an order.\
+                  Your order id is {}.'.format(order.first_name,
+                                               order.id)
+
+    mail_sent = send_mail(subject,
+                          message,
+                          'admin@myshop.com',
+                          [order.email])
+
+    return mail_sent
+
+
